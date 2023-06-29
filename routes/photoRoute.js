@@ -3,6 +3,8 @@ import * as photoController from '../controllers/photoController.js'
 
 const router = express.Router()
 
-router.route('/').get(photoController.createPhoto)
+router.route('/').post(photoController.createPhoto)
+router.route('/').get(photoController.getAllPhotos)
+router.route('/:id').get(photoController.getAPhoto)
 
 export default router
