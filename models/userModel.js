@@ -16,10 +16,10 @@ const userSchema = new Schema(
         },
         password:{
             type: String,
-            required:true,
+            required: true
         }
     },{timestamps: true}
 )
 
-const User = mongoose.Model('Photo',userSchema)
+const User = mongoose.model('User',userSchema)
 export default User
