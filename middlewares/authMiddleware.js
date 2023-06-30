@@ -1,6 +1,31 @@
 import User from "../models/userModel.js"
 import jwt from "jsonwebtoken"
 
+const checkUser = async(req,res,next)=>{
+    const token = req.cookies.jwt
+
+    if(token){
+        jwt.verify(token,process.env.JWT_SECRET, async (e,decodedToken)=>{
+            if(e){
+                console.log(err.message)
+                res.locals.user = null
+                next()
+            }
+            else{
+                //userController'da createToken'i userId olarak belirledik ↓
+                const user = await User.findById(decodedToken.userId)
+                res.locals.user = user
+                next()
+            }
+        })
+    }
+    //token yoksa localde kullanıcı yok demektir
+    else{
+        res.locals.user = null
+        next()
+    }
+}
+
 const authenticateToken = async (req,res,next)=>{
 
     try {
@@ -29,4 +54,4 @@ const authenticateToken = async (req,res,next)=>{
     
 }
 
-export {authenticateToken}
+export {authenticateToken,checkUser}
