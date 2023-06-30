@@ -1,5 +1,6 @@
 //controller:  gelen isteğin döndüreceği yada yapacağı işlem kodlarının yazıldığı kısım
 const getIndexPage = (req,res)=>{
+    console.log("req user", req.user)
     res.render('index',{
         link: 'index'
     })
@@ -14,7 +15,13 @@ const getAboutPage = (req,res)=>{
 const getRegisterPage = (req,res)=>{
     res.render('register',{
     link: "register"
-})
+    })
 }
 
-export {getIndexPage, getAboutPage, getRegisterPage}
+const getLoginPage = (req,res)=>{
+    res.render('login',{
+    link: "login"
+    })
+}
+
+export {getIndexPage, getAboutPage, getRegisterPage, getLoginPage}
