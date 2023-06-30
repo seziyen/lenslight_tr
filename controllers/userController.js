@@ -44,10 +44,12 @@ const loginUser = async (req,res)=>{
             })
         }
         if(same){
-            res.status(200).json({
-                 user,
-                 token: createToken(user._id)
+            const token = createToken(user._id)
+            res.cookie("jwt",token,{
+                httpOnly: true,
+                maxAge : 24 * 60 * 60 *  1000 
             })
+            res.redirect("/users/dashboard")
         }
         else{
             return res.status(401).json({
@@ -71,4 +73,10 @@ const createToken = (userId) =>{
 }
 
 
-export {createUser,loginUser}
+const getDashboardPage = (req,res)=>{
+    res.render('dashboard',{
+    link: "dashboard"
+})
+}
+
+export {createUser,loginUser,getDashboardPage}
