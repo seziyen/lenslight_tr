@@ -1,6 +1,5 @@
 //controller:  gelen isteğin döndüreceği yada yapacağı işlem kodlarının yazıldığı kısım
 const getIndexPage = (req,res)=>{
-    console.log("req user", req.user)
     res.render('index',{
         link: 'index'
     })
