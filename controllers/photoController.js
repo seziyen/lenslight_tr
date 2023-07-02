@@ -62,9 +62,19 @@ const getAllPhotos = async (req,res)=>{
 const getAPhoto = async (req,res)=>{
     try {
         const photo = await Photo.findById({ _id: req.params.id}).populate("user")
+
+        //yetkili kullanıcı silme adımı
+        
+        let isOwner = false
+
+        if(res.locals.user){
+            isOwner = photo.user.equals(res.locals.user_id)
+        }
+
         res.status(200).render('photo',{
         photo,
-        link:"photos"
+        link:"photos",
+        isOwner
     })
 
     } catch (error) {
@@ -96,4 +106,43 @@ const deletePhoto = async (req,res)=>{
         })
     }
 }
-export { createPhoto, getAllPhotos, getAPhoto,deletePhoto}
+
+const updatePhoto = async (req,res)=>{
+    try {
+        
+        const photo =  await Photo.findById(req.params.id)
+        
+        if(req.files){ 
+            //foto silme (güncelleme için)
+            const photoId = photo.image_id
+            await cloudinary.uploader.destroy(photoId)
+            //foto ekle güncelleme için)
+            const result =  await cloudinary.uploader.upload(
+                req.files.image.tempFilePath,
+                {
+                    use_filename: true,
+                    folder: 'lenslight_tr'
+                }
+            )
+            photo.url = result.secure_url
+            photo.image_id = result.public_id
+
+            fs.unlinkSync(req.files.image.tempFilePath)
+        }
+
+        //name ve desc güncelleme
+        photo.name = req.body.name
+        photo.description = req.body.description
+
+        photo.save()
+
+        res.status(200).redirect(`/photos/${req.params.id}`)
+
+    } catch (error) {
+        res.status(500).json({
+            succesed:false,
+            error,
+        })
+    }
+}
+export { createPhoto, getAllPhotos, getAPhoto,deletePhoto,updatePhoto}

@@ -1,7 +1,19 @@
 //controller:  gelen isteğin döndüreceği yada yapacağı işlem kodlarının yazıldığı kısım
-const getIndexPage = (req,res)=>{
+import Photo from '../models/photoModel.js'
+import User from '../models/userModel.js'
+const getIndexPage = async (req,res)=>{
+
+    //son eklenen 3 fotoğrafı listeler
+    const photos = await Photo.find().sort({uploadedAt: -1}).limit(3)
+    //tüm kayıtların sayısını alır
+    const numOfUser = await User.countDocuments({})
+    const numOfPhotos = await Photo.countDocuments({})
     res.render('index',{
-        link: 'index'
+        link: 'index',
+        photos,
+        numOfUser,
+        numOfPhotos
+
     })
 }
 
